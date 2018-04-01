@@ -10,10 +10,13 @@ var changeSidebarFxn = function() {
 	if (selected_fxn == 'Requirements') {
 		sidebarFxn = 'Requirements';
 		$('#program_chosen').show();
+		$('#swaps').css("display", "none");
 	} else {
 		sidebarFxn = 'Swap';
 		$('#program_chosen').css("display","none");
 		$("#program-information .ng-scope").css("display", "none");
+		$("#swaps").show();
+		$("#swaps").append(`<p style="color:white;font-size:1.5em;padding:20px;">ASDF</p>`);
 	}
 }
 
@@ -1542,7 +1545,15 @@ app.controller("global", function($scope, $location, $http, $timeout, Variables,
 			var heading = $('.heading').get(0);
 			heading.insertBefore(form, heading.firstChild);
 
+			$(`<div id="swaps"
+				style="color:white;font-size:1.5em;padding:20px;">
+				hey man how's it going I'm doing pretty well haha so yeah
+				wanna swap courses haha ;)
+				</div>`)
+				.insertAfter("#program-course-lookup .heading");
+
 			$('#program_chosen').css('display', 'none');
+			$('#swaps').css('display', 'none');
 		}
 
 		$timeout(function() {
@@ -4780,7 +4791,7 @@ $scope.$watch('program', function() {
 		});
 	}
 	else {
-		$scope.global.progwidgetSelected = false;      
+		$scope.global.progwidgetSelected = false;
 	}
 });
 

@@ -1546,10 +1546,16 @@ app.controller("global", function($scope, $location, $http, $timeout, Variables,
 			heading.insertBefore(form, heading.firstChild);
 
 			$(`<div id="swaps"
-				style="color:white;font-size:1.5em;padding:20px;">
-				hey man how's it going I'm doing pretty well haha so yeah
-				wanna swap courses haha ;)
-				</div>`)
+				style="color:white;font-size:1.5em;padding:20px;overflow-y:auto;height:500px;">
+					<p>
+						<a href="http://bulletin.engineering.columbia.edu/files/seasbulletin/Bulletin2017/Bulletin_2017_APPH_1st2nd_YR_Program.jpg" target="_blank"><img style="padding:20px; height:auto; width:auto; max-width:300px; max-height:500px;" src="http://bulletin.engineering.columbia.edu/files/seasbulletin/Bulletin2017/Bulletin_2017_APPH_1st2nd_YR_Program.jpg"/></a>
+						<a href="http://bulletin.engineering.columbia.edu/files/seasbulletin/Bulletin2017/Bulletin_2017_APPH_1st2nd_YR_Program.jpg" target="_blank"><img style="padding:20px; height:auto; width:auto; max-width:300px; max-height:500px;" src="http://bulletin.engineering.columbia.edu/files/seasbulletin/Bulletin2017/Bulletin_2017_APPH_1st2nd_YR_Program.jpg"/></a>
+
+						hey man how's it going I'm doing pretty well haha so yeah
+						wanna swap courses haha ;)
+					</p>
+				</div>
+				`)
 				.insertAfter("#program-course-lookup .heading");
 
 			$('#program_chosen').css('display', 'none');

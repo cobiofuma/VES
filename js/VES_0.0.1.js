@@ -5,11 +5,11 @@ var fv;
 var gmapLookupCache = {};
 var sidebarFxn;
 var planner_window = $(`<div
-	style="color:white;font-size:1.5em;padding:1rem;overflow-y:auto;height:calc(100% - 60px);">
+	style="color:white;font-size:1.5em;padding:1rem;overflow-y:auto;height:200px;">
 	</div>
 	`)
 var requirements_content = $(`<p>requirements</p>`)
-var swap_content = $(`<p>swap</p>`)
+var swap_content = $(`<p style="color:white;font-size:1.5em;padding:20px;">Course swap feature coming soon!</p>`)
 
 var changeSidebarFxn = function() {
 	var selected_fxn = $('#sidebar_select').val();
@@ -19,8 +19,52 @@ var changeSidebarFxn = function() {
 		$('#swaps').css("display", "none");
 		$('#school_select').show();
 		showProgBar();
-		requirements_content.appendTo(planner_window);
+
 		swap_content.detach();
+
+		/*
+		var my_url = 'https://ves.columbiaspectator.com/api/getMajorData';
+		// var my_url = 'http://localhost:3000/api/getMajorData';
+		majorDataGet = $http({
+			"method": "POST",
+			"url": my_url,
+			"data": angular.toJson({'Department': $scope.program, "School": $('#school_select').val()}),
+			"headers": {},
+			"responseType": 'json',
+			'ignoreLoadingBar': true
+		});
+
+		majorDataGet.then(function(my_rec_data) {
+			data = my_rec_data['data'];
+			delete data._id;
+			delete data.Department;
+			$scope.programInfo = build_checklist(data);
+	    });
+
+		if (!$scope.programInfo) {
+			$scope.programInfo = "Sorry, no information is available for this program.";
+			ga('send', 'event', 'Program Information empty', $scope.program);
+		}
+		else {
+			ga('send', 'event', 'Program Information shown', $scope.program);
+		}
+		*/
+
+		// do manual fetch
+		// var my_url = 'https://ves.columbiaspectator.com/api/getMajorData';
+		// var my_url = 'http://localhost:3000/api/getMajorData';
+
+		if($('.chosen-single span').val() != "" && $('.chosen-single span').val() != null) {
+			fetch('https://ves.columbiaspectator.com/api/getMajorData', {method: 'post', mode: 'cors', body: {'Department': $('.chosen-single span').val(), 'School': $('#school_select').val()}}).then(function(my_rec_data) {
+				data = my_rec_data['data'];
+				delete data._id;
+				delete data.Department;
+				// $scope.programInfo = build_checklist(data);
+				// requirements_content = build_checklist(data);
+				build_checklist(data).insertAfter("#program-course-lookup .heading");
+				// requirements_content.appendTo(planner_window);
+			});
+		}
 	} else {
 		sidebarFxn = 'Swap';
 		$('#program_chosen').css("display","none");
@@ -2119,9 +2163,12 @@ $timeout(function() {
 }, 2000);
 
 angular.element(document).ready(function () {
-	// Inject planner_window
-	planner_window.insertAfter("#program-course-lookup .heading");
-	swap_content.appendTo(planner_window);
+	// let's not inject planner_window sorry billy
+	// planner_window.insertAfter("#program-course-lookup .heading");
+	// swap_content.appendTo(planner_window);
+	swap_content.insertAfter("#program-course-lookup .heading");
+	var header = document.querySelector("#program-course-lookup .heading");
+	header.setAttribute("style", "height:100px;");
 
 	// Add basic html dropdown
 	var form = document.createElement("form");
@@ -2146,7 +2193,7 @@ angular.element(document).ready(function () {
 	school_sel.setAttribute("id", "school_select");
 	school_sel.setAttribute("onChange", "showProgBar();");
 
-	school_vals = ['BC', 'CC', 'GS', 'SEAS'];
+	school_vals = ['Select School', 'CC'];
 	for (var i=0; i<school_vals.length; i++) {
 		var opt = document.createElement("option");
 		opt.setAttribute("value", school_vals[i])
@@ -2853,7 +2900,7 @@ refresh = function() {
       */
 
 
-
+			// fetch("http://localhost:3000/api/getNicknames", {method: "post"})
       fetch("https://ves.columbiaspectator.com/api/getNicknames", {method: "post"})
       .then(function(resp) {
       	return resp.json();

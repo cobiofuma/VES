@@ -4,6 +4,12 @@ var sliderLevelsStart = [1000, 9000];
 var fv;
 var gmapLookupCache = {};
 var sidebarFxn;
+var planner_window = $(`<div
+	style="color:white;font-size:1.5em;padding:1rem;overflow-y:auto;height:calc(100% - 60px);">
+	</div>
+	`)
+var requirements_content = $(`<p>requirements</p>`)
+var swap_content = $(`<p>swap</p>`)
 
 var changeSidebarFxn = function() {
 	var selected_fxn = $('#sidebar_select').val();
@@ -13,6 +19,8 @@ var changeSidebarFxn = function() {
 		$('#swaps').css("display", "none");
 		$('#school_select').show();
 		showProgBar();
+		requirements_content.appendTo(planner_window);
+		swap_content.detach();
 	} else {
 		sidebarFxn = 'Swap';
 		$('#program_chosen').css("display","none");
@@ -20,6 +28,8 @@ var changeSidebarFxn = function() {
 		$("#swaps").show();
 		$("#swaps").append(`<p style="color:white;font-size:1.5em;padding:20px;">ASDF</p>`);
 		$('#school_select').css("display","none");
+		swap_content.appendTo(planner_window);
+		requirements_content.detach();
 	}
 }
 
@@ -1546,56 +1556,6 @@ app.controller("global", function($scope, $location, $http, $timeout, Variables,
 
 			$("#progwidget button").tooltip('destroy').removeAttr("data-toggle");
 
-			// Add basic html dropdown
-			var form = document.createElement("form");
-			var sel = document.createElement("select");
-			sel.setAttribute("name", "sidebar_fxns");
-			sel.setAttribute("id", "sidebar_select");
-			sel.setAttribute('onChange', 'changeSidebarFxn();');
-			vals = ['Course Swap','Major Requirements'];
-			for (var i=0; i<vals.length; i++) {
-				var opt = document.createElement("option");
-				opt.setAttribute("value", vals[i].split(" ")[1]);
-				opt.innerHTML = vals[i];
-				sel.appendChild(opt);
-			}
-			form.appendChild(sel);
-			var heading = $('.heading').get(0);
-
-			// Add school dropdown
-			var school_form = document.createElement("form");
-			var school_sel = document.createElement("select");
-			school_sel.setAttribute("name", "major_school");
-			school_sel.setAttribute("id", "school_select");
-			school_sel.setAttribute("onChange", "showProgBar();");
-
-			school_vals = ['BC', 'CC', 'GS', 'SEAS'];
-			for (var i=0; i<school_vals.length; i++) {
-				var opt = document.createElement("option");
-				opt.setAttribute("value", school_vals[i])
-				opt.innerHTML = school_vals[i];
-				school_sel.appendChild(opt);
-			}
-			school_form.appendChild(school_sel);
-			heading.insertBefore(school_form, heading.firstChild);
-			heading.insertBefore(form, heading.firstChild);
-
-			$(`<div id="swaps"
-				style="color:white;font-size:1.5em;padding:20px;overflow-y:auto;height:500px;">
-					<p>
-						<a href="http://bulletin.engineering.columbia.edu/files/seasbulletin/Bulletin2017/Bulletin_2017_APPH_1st2nd_YR_Program.jpg" target="_blank"><img style="padding:20px; height:auto; width:auto; max-width:300px; max-height:500px;" src="http://bulletin.engineering.columbia.edu/files/seasbulletin/Bulletin2017/Bulletin_2017_APPH_1st2nd_YR_Program.jpg"/></a>
-						<a href="http://bulletin.engineering.columbia.edu/files/seasbulletin/Bulletin2017/Bulletin_2017_APPH_1st2nd_YR_Program.jpg" target="_blank"><img style="padding:20px; height:auto; width:auto; max-width:300px; max-height:500px;" src="http://bulletin.engineering.columbia.edu/files/seasbulletin/Bulletin2017/Bulletin_2017_APPH_1st2nd_YR_Program.jpg"/></a>
-
-						hey man how's it going I'm doing pretty well haha so yeah
-						wanna swap courses haha ;)
-					</p>
-				</div>
-				`)
-				.insertAfter("#program-course-lookup .heading");
-
-			$('#program_chosen').css('display', 'none');
-			$('#swaps').css('display', 'none');
-			$('#school_select').css('display', 'none');
 		}
 
 		$timeout(function() {
@@ -2159,6 +2119,46 @@ $timeout(function() {
 }, 2000);
 
 angular.element(document).ready(function () {
+	// Inject planner_window
+	planner_window.insertAfter("#program-course-lookup .heading");
+	swap_content.appendTo(planner_window);
+
+	// Add basic html dropdown
+	var form = document.createElement("form");
+	var sel = document.createElement("select");
+	sel.setAttribute("name", "sidebar_fxns");
+	sel.setAttribute("id", "sidebar_select");
+	sel.setAttribute('onChange', 'changeSidebarFxn();');
+	vals = ['Course Swap','Major Requirements'];
+	for (var i=0; i<vals.length; i++) {
+		var opt = document.createElement("option");
+		opt.setAttribute("value", vals[i].split(" ")[1]);
+		opt.innerHTML = vals[i];
+		sel.appendChild(opt);
+	}
+	form.appendChild(sel);
+	var heading = $('.heading').get(0);
+
+	// Add school dropdown
+	var school_form = document.createElement("form");
+	var school_sel = document.createElement("select");
+	school_sel.setAttribute("name", "major_school");
+	school_sel.setAttribute("id", "school_select");
+	school_sel.setAttribute("onChange", "showProgBar();");
+
+	school_vals = ['BC', 'CC', 'GS', 'SEAS'];
+	for (var i=0; i<school_vals.length; i++) {
+		var opt = document.createElement("option");
+		opt.setAttribute("value", school_vals[i])
+		opt.innerHTML = school_vals[i];
+		school_sel.appendChild(opt);
+	}
+	school_form.appendChild(school_sel);
+	heading.insertBefore(school_form, heading.firstChild);
+	heading.insertBefore(form, heading.firstChild);
+
+	$('#program_chosen').css('display', 'none');
+	$('#school_select').css('display', 'none');
 	if (window.navigator.standalone == true) {
 		$("body").addClass("full-screen-app");
 	}

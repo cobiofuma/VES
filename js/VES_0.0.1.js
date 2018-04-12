@@ -105,6 +105,12 @@ var ccJson = {
     }
 };
 
+var setReqsHeight = function(elem) {
+	var moduleHeight = $("#program-course-lookup").height();
+	var headingHeight = $("#program-course-lookup .heading").height();
+	$(elem).height(((moduleHeight - headingHeight) / 2) + "px");
+}
+
 var changeSidebarFxn = function() {
 	var selected_fxn = $('#sidebar_select').val();
 	if (selected_fxn == 'Requirements') {
@@ -165,10 +171,10 @@ var changeSidebarFxn = function() {
 				build_checklist(data).insertAfter("#program-course-lookup .heading");
 
 
-				var info = document.querySelector("#program-information");
-				info.setAttribute("style", "height:300px;");
+				//var info = document.querySelector("#program-information");
+				//info.setAttribute("style", "height:300px;");
 
-				$('#program-information').css("height", "calc(100% - 60px);");
+				//$('#program-information').css("height", "calc(100% - 60px);");
 
 
 				// $('#program-information').css("height", "calc(100% - 50px);");
@@ -262,9 +268,13 @@ var schoolReqs = function() {
 		// $('<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">CC</p>').insertAfter("#program-course-lookup .heading");
 		var reqBlock = build_checklist(ccJson);
 		reqBlock.setAttribute("id", "schoolReqs");
-		reqBlock.setAttribute("css", "color:white;");
-		reqBlock.setAttribute("css", "font-size:1.5em;");
-		reqBlock.setAttribute("css", "padding:20px;");
+		reqBlock.setAttribute("style", "overflow:auto;font-size:1.5em;color:white;padding:20px;");
+		setReqsHeight(reqBlock)
+
+		$(window).resize(() => {
+			setReqsHeight(reqBlock)
+		})
+
 		document.getElementById("program-course-lookup").appendChild(reqBlock);
 		// $(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">${build_checklist(ccJson)}</p>`).insertAfter("#program-course-lookup .heading");
 		/*
@@ -5085,6 +5095,8 @@ $scope.$watch('program', function() {
 		else {
 			ga('send', 'event', 'Program Information shown', $scope.program);
 		}
+
+		setReqsHeight($('#program-information').parent()[0])
 
 		$timeout(function() {
 			$("#program-information").scrollTop(0);

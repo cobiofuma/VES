@@ -53,6 +53,13 @@ var changeSidebarFxn = function() {
 		// do manual fetch
 		// var my_url = 'https://ves.columbiaspectator.com/api/getMajorData';
 		// var my_url = 'http://localhost:3000/api/getMajorData';
+		if($('#school_select').val() == 'Select School') {
+			$('<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">No school selected.</p>').insertAfter("#program-course-lookup .heading");
+		} else if($('#school_select').val() == 'CC') {
+			$(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">CC selected!</p>`).insertAfter("#program-course-lookup .heading");
+		} else if($('#school_select').val() == 'SEAS') {
+			$(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">SEAS selected!</p>`).insertAfter("#program-course-lookup .heading");
+		}
 
 		if($('.chosen-single span').val() != "" && $('.chosen-single span').val() != null) {
 			fetch('https://ves.columbiaspectator.com/api/getMajorData', {method: 'post', mode: 'cors', body: {'Department': $('.chosen-single span').val(), 'School': $('#school_select').val()}}).then(function(my_rec_data) {
@@ -62,6 +69,15 @@ var changeSidebarFxn = function() {
 				// $scope.programInfo = build_checklist(data);
 				// requirements_content = build_checklist(data);
 				build_checklist(data).insertAfter("#program-course-lookup .heading");
+
+
+				var info = document.querySelector("#program-information");
+				info.setAttribute("style", "height:300px;");
+
+				$('#program-information').css("height", "calc(100% - 60px);");
+
+
+				// $('#program-information').css("height", "calc(100% - 50px);");
 				// requirements_content.appendTo(planner_window);
 			});
 		}
@@ -70,10 +86,23 @@ var changeSidebarFxn = function() {
 		$('#program_chosen').css("display","none");
 		$("#program-information .ng-scope").css("display", "none");
 		$("#swaps").show();
-		$("#swaps").append(`<p style="color:white;font-size:1.5em;padding:20px;">ASDF</p>`);
+		$("#swaps").append(`<p style="color:white;font-size:1.5em;">ASDF</p>`);
 		$('#school_select').css("display","none");
-		swap_content.appendTo(planner_window);
+		$("#schoolReqs").detach();
+		// swap_content.appendTo(planner_window);
+		swap_content.insertAfter("#program-course-lookup .heading")
 		requirements_content.detach();
+	}
+}
+
+var schoolReqs = function() {
+	$("#schoolReqs").detach();
+	if($('#school_select').val() == 'Select School') {
+		$('<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">No school selected.</p>').insertAfter("#program-course-lookup .heading");
+	} else if($('#school_select').val() == 'CC') {
+		$(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">CC selected!</p>`).insertAfter("#program-course-lookup .heading");
+	} else if($('#school_select').val() == 'SEAS') {
+		$(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">SEAS selected!</p>`).insertAfter("#program-course-lookup .heading");
 	}
 }
 
@@ -2191,9 +2220,9 @@ angular.element(document).ready(function () {
 	var school_sel = document.createElement("select");
 	school_sel.setAttribute("name", "major_school");
 	school_sel.setAttribute("id", "school_select");
-	school_sel.setAttribute("onChange", "showProgBar();");
+	school_sel.setAttribute("onChange", "showProgBar(); schoolReqs();");
 
-	school_vals = ['Select School', 'CC'];
+	school_vals = ['Select School', 'CC', 'SEAS'];
 	for (var i=0; i<school_vals.length; i++) {
 		var opt = document.createElement("option");
 		opt.setAttribute("value", school_vals[i])

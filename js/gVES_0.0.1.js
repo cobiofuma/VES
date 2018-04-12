@@ -16317,7 +16317,7 @@ breakpointApp.directive('breakpoint', ['$window', '$rootScope', function($window
             if (settings.debug) {
                 console.log(icsMSG);
             }
-            window.open("data:text/calendar;charset=utf8," + escape(icsMSG));
+            window.location.href = ("data:text/calendar;charset=utf8," + escape(icsMSG));
         }
         return this.each(function() {
             var elem = $(this);

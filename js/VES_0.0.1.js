@@ -10,6 +10,100 @@ var planner_window = $(`<div
 	`)
 var requirements_content = $(`<p>requirements</p>`)
 var swap_content = $(`<p style="color:white;font-size:1.5em;padding:20px;">Course swap feature coming soon!</p>`)
+var ccJson = {
+  "Literature Humanities": {
+      "block_0": [{
+          "code": "HUMA CC1001",
+          "title": "EURPN LIT - PHILOS MASTERPIECS I"
+        },
+        {
+          "code": "HUMA CC1002",
+          "title": "EURPN LIT - PHILOS MASTERPIECS II"
+        }
+      ]
+    }, "Contemporary Civilizations": {
+      "block_0": [{
+          "code": "COCI CC1001",
+          "title": "Introduction to Contemporary Civilization in the West"
+        },
+        {
+          "code": "COCI CC1002",
+          "title": "Introduction to Contemporary Civilization in the West"
+        }
+      ]
+    }, "Science Requirements": {
+      "block_0": [{
+          "code": "SCNC CC1000",
+          "title": "Frontiers of Science"
+        },
+        {
+          "code": "Science Elective I",
+          "title": "Science Elective I"
+        },
+        {
+          "code": "Science Elective II",
+          "title": "Science Elective II"
+        }
+      ]
+    },
+
+    "University Writing": {
+      "block_0": [{
+        "code": "ENGL CC1010",
+        "title": "University Writing"
+      }]
+    },
+
+    "Foreign Language": {
+      "block_0": [{
+          "code": "Foreign Language 1",
+          "title": "Foreign Language I"
+        },
+        {
+          "code": "Foreign Language 2",
+          "title": "Foreign Language II"
+        },
+        {
+          "code": "Foreign Language 3",
+          "title": "Foreign Language III"
+        },
+        {
+          "code": "Foreign Language 4",
+          "title": "Foreign Language IV"
+        }
+      ]
+    }, "Art Humanities": {
+      "block_0": [{
+        "code": "HUMA UN1121",
+        "title": "Masterpieces of Western Art"
+      }]
+    }, "Music Humanities": {
+      "block_0": [{
+        "code": "HUMA UN1123",
+        "title": "MASTERPIECES OF WESTERN MUSIC"
+      }]
+    }, "Global Core": {
+      "block_0": [{
+          "code": "Global Core 1",
+          "title": "Global Core I"
+        },
+        {
+          "code": "Global Core 2",
+          "title": "Global Core II"
+        }
+      ]
+    }, "Physical Education": {
+      "block_0": [{
+          "code": "PHED CC1001",
+          "title": "Physical Education"
+        },
+        {
+          "code": "PHED CC1002",
+          "title": "Physical Education"
+        }
+      ]
+    }
+};
 
 var changeSidebarFxn = function() {
 	var selected_fxn = $('#sidebar_select').val();
@@ -96,11 +190,92 @@ var changeSidebarFxn = function() {
 }
 
 var schoolReqs = function() {
+	var make_checkbox = function(txt) {
+		var div = document.createElement("div");
+
+		var cb = document.createElement("input");
+		cb.setAttribute("value", txt);
+		cb.setAttribute("type", "checkbox");
+		// return cb;
+
+		div.innerText = txt;
+		div.insertBefore(cb, div.firstChild);
+		return div;
+	}
+
+	var build_checklist = function(data) {
+
+		// comment
+		if (typeof data == 'string') {
+			var b = document.createElement("b");
+			b.innerHTML = data;
+			return b;
+		}
+
+		// array of classes
+		if (data instanceof Array) {
+			var ul = document.createElement("ul");
+			ul.setAttribute("style", "list-style: none");
+			for (var i=0; i<data.length; i++) {
+				var li = document.createElement("li");
+				li.appendChild( build_checklist(data[i]) );
+				ul.appendChild(li);
+			}
+			return ul;
+		}
+
+		// class item -- just return checkbox of it
+		var kys = Object.keys(data);
+		if (kys.indexOf('code')!=-1 && kys.indexOf('title')!=-1) {
+			return make_checkbox(" " + data['code'] + " " + data['title']);
+		}
+
+		if (kys.length == 1) {
+			var div = document.createElement("div");
+			var h4 = document.createElement("h4");
+			h4.innerHTML = kys[0];
+			div.appendChild(h4);
+			div.appendChild( build_checklist(data[kys[0]]));
+			return div;
+		} else {
+			var children = [];
+			var ul = document.createElement("ul");
+			ul.setAttribute("style", "list-style: none");
+			for (var i=0; i<kys.length; i++) {
+				var pass_data = {};
+				pass_data[kys[i]] = data[kys[i]];
+				var this_list = build_checklist(pass_data);
+				var li = document.createElement("li");
+				li.appendChild(this_list);
+				ul.appendChild(li);
+			}
+		}
+		return ul;
+	}
+
 	$("#schoolReqs").detach();
 	if($('#school_select').val() == 'Select School') {
 		$('<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">No school selected.</p>').insertAfter("#program-course-lookup .heading");
 	} else if($('#school_select').val() == 'CC') {
-		$(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">CC selected!</p>`).insertAfter("#program-course-lookup .heading");
+		//$(`<p>${JSON.stringify(ccJson)}</p>`).insertAfter("#program-course-lookup .heading");
+
+		// $('<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">CC</p>').insertAfter("#program-course-lookup .heading");
+		var reqBlock = build_checklist(ccJson);
+		reqBlock.setAttribute("id", "schoolReqs");
+		reqBlock.setAttribute("css", "color:white;");
+		reqBlock.setAttribute("css", "font-size:1.5em;");
+		reqBlock.setAttribute("css", "padding:20px;");
+		document.getElementById("program-course-lookup").appendChild(reqBlock);
+		// $(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">${build_checklist(ccJson)}</p>`).insertAfter("#program-course-lookup .heading");
+		/*
+		var block = build_checklist(Object.keys(ccJson));
+		block.setAttribute("id", "schoolReqs");
+		block.insertAfter("#program-course-lookup .heading");
+		*/
+
+
+		// build_checklist(ccJson).insertAfter("#program-course-lookup .heading");
+		// $(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">CC selected!</p>`).insertAfter("#program-course-lookup .heading");
 	} else if($('#school_select').val() == 'SEAS') {
 		$(`<p id="schoolReqs" style="color:white;font-size:1.5em;padding:20px;">SEAS selected!</p>`).insertAfter("#program-course-lookup .heading");
 	}
